@@ -1,15 +1,17 @@
-from rich.console import Console
 import string
+
+from rich.console import Console
 
 console = Console()
 
 letters = string.ascii_letters
 letters = letters[15:26]
 
+
 def split_expression(exp: str) -> list:
     expression_values = list()
     bracket = ["", 0]
-    
+
     for char in expression.replace(" ", ""):
         if char == "(" or char == ")":
             bracket = [char, 1]
@@ -21,10 +23,10 @@ def split_expression(exp: str) -> list:
                     char = char + bracket[0]
                 bracket = ["", 0]
             expression_values.append(char)
-            
+
     if bracket[1] == 1:
         expression_values[-1] = expression_values[-1] + bracket[0]
-    
+
     return expression_values
 
 
@@ -33,16 +35,16 @@ def split_expression(exp: str) -> list:
 
 def find_simple_propositions(s_exp: list, letters: list) -> list:
     simple_propositions = list()
-    
+
     for char in s_exp:                
         if len(char) == 2:
             for c in char:
                 if c in letters and c not in simple_propositions:
                     simple_propositions.append(c)
-        
+
         if char in letters:
             simple_propositions.append(char)
-            
+   
     return simple_propositions
 
 
