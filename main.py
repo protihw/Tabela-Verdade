@@ -11,10 +11,24 @@ letters = letters[15:26]
 def split_expression(exp: str) -> list:
     expression_values = list()
     bracket = ["", False]
+    _ = 0
 
     for char in expression.replace(" ", ""):
-        if char == "(" or char == ")":
+        if char in ["<", ">"]:
+            pass
+        elif char in ["(", ")"]:
             bracket = [char, True]
+        elif char == "-":
+            index = expression.index(char, _)
+
+            if expression[index - 1] == "<":
+                char = "<->"
+            else:
+                char = "->"
+            
+            expression_values.append(char)
+            
+            _ = index + 1
         else:
             if bracket[1] is True:
                 if bracket[0] == "(":
@@ -22,11 +36,14 @@ def split_expression(exp: str) -> list:
                 else:
                     char = char + bracket[0]
                 bracket = ["", 0]
-            expression_values.append(char)
+                
+                expression_values.append(char)
+            else:
+                expression_values.append(char)
 
     if bracket[1] == 1:
         expression_values[-1] = expression_values[-1] + bracket[0]
-
+    
     return expression_values
 
 
