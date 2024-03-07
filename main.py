@@ -49,7 +49,7 @@ def split_expression(exp: str) -> list:
 
 
 # this function uses a loop to read the splited expression and return the simple propositions
-def find_simple_propositions(s_exp: list, letters: list) -> list:
+def find_simple_propositions(s_exp: list) -> list:
     simple_propositions = list()
 
     for char in s_exp:                
@@ -65,26 +65,17 @@ def find_simple_propositions(s_exp: list, letters: list) -> list:
 
 
 # this function uses the simple proposiitions to find their logical values and return them
-def find_sp_logical_values(s_pro: list, letters: list) -> list:
-    logical_values = []
-    
+def find_simple_logical_values(char: str, s_pro: list) -> list:
     # [proposition/logical operator, logical values, row index]
-    row_logical_values = []
-    
-    for char in s_pro:
-        row_logical_values.append(char)
-        
-        while len(row_logical_values) < 2 ** len(s_pro):
-            for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
-                row_logical_values.append(1)
-            for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
-                row_logical_values.append(0)
-        
-        row_logical_values.append(1)
-        
-        logical_values.append(row_logical_values)
-        
-        row_logical_values = []
+    logical_values = [char]
+                
+    while len(logical_values) < 2 ** len(s_pro):
+        for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
+            logical_values.append(1)
+        for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
+            logical_values.append(0)
+
+    logical_values.append(1)
     
     return logical_values
 
@@ -92,7 +83,7 @@ def find_sp_logical_values(s_pro: list, letters: list) -> list:
 def find_denial_logical_values(sp_logical_values: list) -> list:
     # [proposition/logical operator, logical values, row index]
     logical_values = ["~"]
-
+    
     for value in sp_logical_values:
         if isinstance(value, int):
             if value == 0:
@@ -103,16 +94,15 @@ def find_denial_logical_values(sp_logical_values: list) -> list:
     logical_values[-1] = 2
     
     return logical_values
-    
+
 
 if __name__ == "__main__":
     console.print("[red]AVISO: ~ ^ : -> <->")
     expression = input("[!] INSIRA A EXPRESSÃO: ")
     
     splited_expression = split_expression(expression)
-    simple_propositions = find_simple_propositions(splited_expression, letters)    
-    logical_values = find_sp_logical_values(simple_propositions, letters)
-    
-    console.print()
-    console.print(f"[yellow]{logical_values}")
-    console.print(find_denial_logical_values(logical_values[0]))
+    simple_propositions = find_simple_propositions(splited_expression)    
+    simple_logical_values = find_simple_logical_values("p", simple_propositions)
+    denial_logical_values = find_denial_logical_values(simple_logical_values)
+    console.print(f"[yellow]{simple_logical_values}")
+    console.print(f"[yellow]{denial_logical_values}")
