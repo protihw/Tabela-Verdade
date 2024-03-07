@@ -121,4 +121,7 @@ if __name__ == "__main__":
     splited_expression = split_expression(expression)
     
     console.print(splited_expression)
+
+    simple_propositions = find_simple_propositions(splited_expression, letters)
     
+    console.print(simple_propositions)
