@@ -69,20 +69,24 @@ def find_simple_propositions(s_exp: list, letters: list) -> list:
 # this function uses the simple proposiitions to find their logical values and return them
 def find_sp_logical_values(s_pro: list, letters: list) -> list:
     logical_values = []
-    row_logical_valeus = []
+    
+    # [proposition/logical operator, logical values, row index]
+    row_logical_values = []
     
     for char in s_pro:
-        row_logical_valeus.append(char)
+        row_logical_values.append(char)
         
-        while len(row_logical_valeus) < 2 ** len(s_pro):
+        while len(row_logical_values) < 2 ** len(s_pro):
             for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
-                row_logical_valeus.append(1)
+                row_logical_values.append(1)
             for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
-                row_logical_valeus.append(0)
-
-        logical_values.append(row_logical_valeus)
-        row_logical_valeus = []
-    
+                row_logical_values.append(0)
+        
+        row_logical_values.append(1)
+        
+        logical_values.append(row_logical_values)
+        
+        row_logical_values = []
     
     return logical_values
 
@@ -92,13 +96,8 @@ if __name__ == "__main__":
     expression = input("[!] INSIRA A EXPRESSÃO: ")
     
     splited_expression = split_expression(expression)
-    
-    console.print(f"EXPRESSÃO DIVIDA: {splited_expression}")
-
-    simple_propositions = find_simple_propositions(splited_expression, letters)
-    
-    console.print(f"PROPOSIÇÕES SIMPLES: {simple_propositions}")
-    
+    simple_propositions = find_simple_propositions(splited_expression, letters)    
     logical_values = find_sp_logical_values(simple_propositions, letters)
     
-    console.print(f"VALORES LÓGICOS SP: {logical_values}")
+    console.print()
+    console.print(f"[yellow]{logical_values}")
