@@ -26,9 +26,9 @@ def split_expression(exp: str) -> list:
                 char = "<->"
             else:
                 char = "->"
-            
+  
             expression_values.append(char)
-            
+
             _ = index + 1
         else:
             if bracket[1] is True:
@@ -68,7 +68,7 @@ def find_simple_propositions(s_exp: list) -> list:
 def find_simple_logical_values(char: str, s_pro: list) -> list:
     # [proposition/logical operator, logical values, row index]
     logical_values = [char]
-                
+          
     while len(logical_values) < 2 ** len(s_pro):
         for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
             logical_values.append(1)
@@ -76,33 +76,57 @@ def find_simple_logical_values(char: str, s_pro: list) -> list:
             logical_values.append(0)
 
     logical_values.append(1)
-    
+
     return logical_values
 
 
 def find_denial_logical_values(sp_logical_values: list) -> list:
     # [proposition/logical operator, logical values, row index]
     logical_values = ["~"]
-    
+
     for value in sp_logical_values:
         if isinstance(value, int):
             if value == 0:
                 logical_values.append(1)
             else:
                 logical_values.append(0)
-    
+
     logical_values[-1] = 2
-    
+
     return logical_values
+
+
+# this function uses the splited expression to find the brackets and organize/return them in order
+def resolve_brackets(s_exp: list) -> list:
+    result = []
+    stack = []
+    for char in s_exp:
+        if char == '(':
+            if stack:
+                result.append(''.join(stack))
+            stack = []
+        elif char == ')':
+            if stack:
+                result.append(''.join(stack))
+            stack = []
+        else:
+            stack.append(char)
+    if stack:
+        result.append(''.join(stack))
+    return result
 
 
 if __name__ == "__main__":
     console.print("[red]AVISO: ~ ^ : -> <->")
     expression = input("[!] INSIRA A EXPRESSÃO: ")
-    
+
     splited_expression = split_expression(expression)
     simple_propositions = find_simple_propositions(splited_expression)    
-    simple_logical_values = find_simple_logical_values("p", simple_propositions)
+    simple_logical_values = find_simple_logical_values(
+        "p", simple_propositions
+    )
     denial_logical_values = find_denial_logical_values(simple_logical_values)
+    brackets = resolve_brackets(splited_expression)
     console.print(f"[yellow]{simple_logical_values}")
     console.print(f"[yellow]{denial_logical_values}")
+    console.print(f"[yellow]{brackets}")
