@@ -50,6 +50,7 @@ def split_expression(exp: str) -> list:
 # resolution method step by step
 
 
+# this fuction uses a loop to read the splited expression and return the simple propositions
 def find_simple_propositions(s_exp: list, letters: list) -> list:
     simple_propositions = list()
 
@@ -65,52 +66,24 @@ def find_simple_propositions(s_exp: list, letters: list) -> list:
     return simple_propositions
 
 
-def find_logical_values(s_exp: list, s_pro: list, letters: list) -> list:
+# this function uses the simple proposiitions to find their logical values and return them
+def find_sp_logical_values(s_pro: list, letters: list) -> list:
     logical_values = []
+    row_logical_valeus = []
     
-    # Step 1: Initialize the logical_values list with None for all possible combinations
-    for _ in range(2 ** len(s_pro)):
-        logical_values.append(None)
-        
-    logical_values.append(None)
-    
-    # Step 2: Find simple propositions logical values
     for char in s_pro:
-        if "(" in char:
-            char = char[1]
-        if ")" in char:
-            char = char[0]
-        if char in letters:
-            char_index = letters.index(char)
-            c = 0
-            
-            # Here you would assign logical values to the propositions
-            
-            while c < len(logical_values) - 1:
-                for _ in range(2 ** (len(s_pro) - (char_index + 1))):
-                    logical_values.insert(c, True)
-                    c += 1
-                        
-                for _ in range(2 ** (len(s_pro) - (char_index + 1))):
-                    logical_values.insert(c, False)
-                    c += 1
-            
-        logical_values.insert(-1, 1)
-                    
-    # Step 3: Find ~ (negation) logical values
+        row_logical_valeus.append(char)
+        
+        while len(row_logical_valeus) < 2 ** len(s_pro):
+            for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
+                row_logical_valeus.append(1)
+            for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
+                row_logical_valeus.append(0)
 
-    # Step 4: Find ^ (conjunction) logical values
-    # Implement similar to Step 3
+        logical_values.append(row_logical_valeus)
+        row_logical_valeus = []
     
-    # Step 5: Find : (disjunction) logical values
-    # Implement similar to Step 3
     
-    # Step 6: Find -> (implication) logical values
-    # Implement similar to Step 3
-    
-    # Step 7: Find <-> (biconditional) logical values
-    # Implement similar to Step 3
-                
     return logical_values
 
 
@@ -120,8 +93,12 @@ if __name__ == "__main__":
     
     splited_expression = split_expression(expression)
     
-    console.print(splited_expression)
+    console.print(f"EXPRESSÃO DIVIDA: {splited_expression}")
 
     simple_propositions = find_simple_propositions(splited_expression, letters)
     
-    console.print(simple_propositions)
+    console.print(f"PROPOSIÇÕES SIMPLES: {simple_propositions}")
+    
+    logical_values = find_sp_logical_values(simple_propositions, letters)
+    
+    console.print(f"VALORES LÓGICOS SP: {logical_values}")
