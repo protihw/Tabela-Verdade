@@ -10,13 +10,13 @@ letters = letters[15:26]
 
 def split_expression(exp: str) -> list:
     expression_values = list()
-    bracket = ["", 0]
+    bracket = ["", False]
 
     for char in expression.replace(" ", ""):
         if char == "(" or char == ")":
-            bracket = [char, 1]
+            bracket = [char, True]
         else:
-            if bracket[1] == 1:
+            if bracket[1] is True:
                 if bracket[0] == "(":
                     char = bracket[0] + char
                 else:
@@ -103,8 +103,5 @@ if __name__ == "__main__":
     
     splited_expression = split_expression(expression)
     
-    simple_propositions = find_simple_propositions(splited_expression, letters)
-    
-    _ = find_logical_values(splited_expression, simple_propositions, letters)
-    console.print(_)
+    console.print(splited_expression)
     
