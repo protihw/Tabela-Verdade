@@ -26,7 +26,7 @@ def split_expression(exp: str) -> list:
                 char = "<->"
             else:
                 char = "->"
-  
+
             expression_values.append(char)
 
             _ = index + 1
@@ -37,30 +37,30 @@ def split_expression(exp: str) -> list:
                 else:
                     char = char + bracket[0]
                 bracket = ["", 0]
-                
+
                 expression_values.append(char)
             else:
                 expression_values.append(char)
 
     if bracket[1] == 1:
         expression_values[-1] = expression_values[-1] + bracket[0]
-    
+
     return expression_values
 
 
 # this function uses a loop to read the splited expression and return the simple propositions
-def find_simple_propositions(s_exp: list) -> list:
-    simple_propositions = list()
+def find_simple_propositions(s_exp: list) -> set:
+    simple_propositions = set()
 
-    for char in s_exp:                
+    for char in s_exp:         
         if len(char) == 2:
             for c in char:
-                if c in letters and c not in simple_propositions:
-                    simple_propositions.append(c)
+                if c in letters:
+                    simple_propositions.add(c)
+        else:
+            if char in letters:
+                simple_propositions.add(char)
 
-        if char in letters:
-            simple_propositions.append(char)
-   
     return simple_propositions
 
 
@@ -68,7 +68,7 @@ def find_simple_propositions(s_exp: list) -> list:
 def find_simple_logical_values(char: str, s_pro: list) -> list:
     # [proposition/logical operator, logical values, row index]
     logical_values = [char]
-          
+ 
     while len(logical_values) < 2 ** len(s_pro):
         for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
             logical_values.append(1)
@@ -100,7 +100,7 @@ def find_denial_logical_values(sp_logical_values: list) -> list:
 def resolve_brackets(s_exp: list) -> list:
     result = []
     stack = []
-    for char in s_exp:
+    for char in expression:
         if char == '(':
             if stack:
                 result.append(''.join(stack))
