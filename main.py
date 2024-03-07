@@ -8,6 +8,7 @@ letters = string.ascii_letters
 letters = letters[15:26]
 
 
+# this function splits the expression in simple propositions or logical operators and return it
 def split_expression(exp: str) -> list:
     expression_values = list()
     bracket = ["", False]
@@ -47,10 +48,7 @@ def split_expression(exp: str) -> list:
     return expression_values
 
 
-# resolution method step by step
-
-
-# this fuction uses a loop to read the splited expression and return the simple propositions
+# this function uses a loop to read the splited expression and return the simple propositions
 def find_simple_propositions(s_exp: list, letters: list) -> list:
     simple_propositions = list()
 
@@ -91,6 +89,22 @@ def find_sp_logical_values(s_pro: list, letters: list) -> list:
     return logical_values
 
 
+def find_denial_logical_values(sp_logical_values: list) -> list:
+    # [proposition/logical operator, logical values, row index]
+    logical_values = ["~"]
+
+    for value in sp_logical_values:
+        if isinstance(value, int):
+            if value == 0:
+                logical_values.append(1)
+            else:
+                logical_values.append(0)
+    
+    logical_values[-1] = 2
+    
+    return logical_values
+    
+
 if __name__ == "__main__":
     console.print("[red]AVISO: ~ ^ : -> <->")
     expression = input("[!] INSIRA A EXPRESSÃO: ")
@@ -101,3 +115,4 @@ if __name__ == "__main__":
     
     console.print()
     console.print(f"[yellow]{logical_values}")
+    console.print(find_denial_logical_values(logical_values[0]))
