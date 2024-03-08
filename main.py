@@ -121,7 +121,7 @@ if __name__ == "__main__":
     expression = input("[!] INSIRA A EXPRESSÃO: ")
 
     splited_expression = split_expression(expression)
-    simple_propositions = find_simple_propositions(splited_expression)    
+    simple_propositions = find_simple_propositions(splited_expression)  
     simple_logical_values = find_simple_logical_values(
         "p", simple_propositions
     )
