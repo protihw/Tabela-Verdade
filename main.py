@@ -85,6 +85,8 @@ def find_denial_logical_values(s_pro_logical_values: list) -> list:
     logical_values = ["~"]
 
     for value in s_pro_logical_values:
+        if isinstance(value, str):
+            logical_values[0] = logical_values[0] + value
         if isinstance(value, int):
             if value == 0:
                 logical_values.append(1)
@@ -98,14 +100,34 @@ def find_denial_logical_values(s_pro_logical_values: list) -> list:
 
 # this function uses the splited expression to find the logical values of a conjunction and return them
 def find_conjunction_logical_values(
-        s_exp: list,
+        char_index: int, expression: list, truth_table: list
         ) -> list:
     logical_values = ["^"]
 
-    for index, char in enumerate(s_exp):
-        if char == "^":
-            console.print(s_exp[index-1])
-            console.print(s_exp[index+1])
+    char = expression[char_index].replace(" ", "") #
+    pp_char = expression[char_index-2].replace(" ", "") # char two steps before ^
+    p_char = expression[char_index-1].replace(" ", "") # char one step before ^
+    n_char = expression[char_index+1].replace(" ", "") # char one step after ^
+    nn_char = expression[char_index+2].replace(" ", "") # char two steps after ^
+
+    if pp_char == "~":
+        for list in truth_table:
+            if list[0][0] == pp_char and list[0][1] == p_char:
+                previous_logical_values = list
+
+    if n_char == "~":
+        for list in truth_table:
+            if list[0][0] == n_char and list[0][1] == nn_char:
+                next_logical_values = list
+
+    for index, value in enumerate(previous_logical_values):
+        if isinstance(value, int):
+            if value == 1 and next_logical_values[index] == 1:
+                logical_values.append(1)
+            else:
+                logical_values.append(0)
+
+    console.print(logical_values)
 
     return logical_values
 
@@ -186,4 +208,12 @@ if __name__ == "__main__":
         splited_expression, simple_propositions, brackets_order
     )
 
-    console.print(truth_table)
+    for v in truth_table:
+        console.print(f"[yellow]{v}", end=" | ")
+
+    for expression in brackets_order:
+        if "^" in expression:
+            char_index = expression.index("^")
+            logical_values = find_conjunction_logical_values(
+                char_index-1, split_expression(expression), truth_table
+            )
