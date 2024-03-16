@@ -64,11 +64,11 @@ def find_simple_propositions(s_exp: list) -> set:
     return simple_propositions
 
 
-# this function uses the simple proposiitions to find their logical values and return them
-def find_simple_logical_values(char: str, s_pro: list) -> list:
+# this function uses the simple propositions to find their logical values and return them
+def find_simple_propositions_logical_values(char: str, s_pro: list) -> list:
     # [proposition/logical operator, logical values, row index]
     logical_values = [char]
- 
+
     while len(logical_values) < 2 ** len(s_pro):
         for _ in range(0, 2 ** (len(s_pro) - (letters.index(char) + 1))):
             logical_values.append(1)
@@ -80,11 +80,11 @@ def find_simple_logical_values(char: str, s_pro: list) -> list:
     return logical_values
 
 
-def find_denial_logical_values(sp_logical_values: list) -> list:
+def find_denial_logical_values(s_pro_logical_values: list) -> list:
     # [proposition/logical operator, logical values, row index]
     logical_values = ["~"]
 
-    for value in sp_logical_values:
+    for value in s_pro_logical_values:
         if isinstance(value, int):
             if value == 0:
                 logical_values.append(1)
@@ -92,6 +92,20 @@ def find_denial_logical_values(sp_logical_values: list) -> list:
                 logical_values.append(0)
 
     logical_values[-1] = 2
+
+    return logical_values
+
+
+# this function uses the splited expression to find the logical values of a conjunction and return them
+def find_conjunction_logical_values(
+        s_exp: list,
+        ) -> list:
+    logical_values = ["^"]
+
+    for index, char in enumerate(s_exp):
+        if char == "^":
+            console.print(s_exp[index-1])
+            console.print(s_exp[index+1])
 
     return logical_values
 
@@ -116,17 +130,60 @@ def resolve_brackets(s_exp: list) -> list:
     return result
 
 
+def resolve_expression(
+        s_exp: list,
+        s_pro: set,
+        brackets: list
+        ) -> list:
+    truth_table = list()
+
+    truth_table.append(s_exp)
+
+    # find simple proposition logical values
+    for char in s_exp:
+        if len(char) == 2 and "(" in char or ")" in char:
+            char = char.strip("()")
+
+        if char in letters:
+            logical_values = find_simple_propositions_logical_values(
+                char, s_pro
+            )
+            truth_table.append(logical_values)
+
+    # find denial operators logical values
+    for index, char in enumerate(s_exp):
+        if len(char) == 2 and "(" in char or ")" in char:
+            char = char.strip("()")
+
+        if char == "~":
+            try:
+                logical_values = find_denial_logical_values(
+                    find_simple_propositions_logical_values(
+                        s_exp[index+1], s_pro
+                    )
+                )
+                truth_table.append(logical_values)
+            except ValueError:
+                logical_values = find_denial_logical_values(
+                    find_simple_propositions_logical_values(
+                        s_exp[index+1].strip("()"), s_pro
+                    )
+                )
+                truth_table.append(logical_values)
+
+    return truth_table
+
+
 if __name__ == "__main__":
     console.print("[red]AVISO: ~ ^ : -> <->")
     expression = input("[!] INSIRA A EXPRESSÃO: ")
 
     splited_expression = split_expression(expression)
-    simple_propositions = find_simple_propositions(splited_expression)  
-    simple_logical_values = find_simple_logical_values(
-        "p", simple_propositions
+    simple_propositions = find_simple_propositions(splited_expression)
+    brackets_order = resolve_brackets(splited_expression)
+
+    truth_table = resolve_expression(
+        splited_expression, simple_propositions, brackets_order
     )
-    denial_logical_values = find_denial_logical_values(simple_logical_values)
-    brackets = resolve_brackets(splited_expression)
-    console.print(f"[yellow]{simple_logical_values}")
-    console.print(f"[yellow]{denial_logical_values}")
-    console.print(f"[yellow]{brackets}")
+
+    console.print(truth_table)
